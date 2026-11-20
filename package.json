@@ -1,6 +1,7 @@
 {
   "name": "thirtymall-search-api",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "description": "떠리몰(thirtymall.com) 상품 검색 API — Shopby shop-api 래퍼",
   "type": "module",

@@ -94,3 +94,7 @@ npm run build && npm start
 - 비공식 연동이다. 운영사가 `clientId`를 바꾸거나 API를 막으면 동작하지 않는다 (`SHOPBY_CLIENT_ID`로 교체 가능).
 - 원본 서버 부담을 줄이기 위해 응답을 `CACHE_TTL_SECONDS` 동안 캐시하고 IP당 요청 수를 제한한다.
   운영에 쓰기 전에 떠리몰 이용약관을 확인할 것.
+
+## 라이선스
+
+MIT — [LICENSE](LICENSE) 참고.
