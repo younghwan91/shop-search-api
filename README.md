@@ -7,6 +7,8 @@
 
 ## 실행
 
+Node.js 22 이상이 필요하다.
+
 ```bash
 npm install
 npm run dev          # tsx watch, http://localhost:3000
@@ -14,7 +16,7 @@ npm test
 npm run build && npm start
 ```
 
-설정은 환경변수로 한다. `.env.example` 참고.
+설정은 환경변수로 한다. 키와 기본값은 `.env.example` 에 있다. 서버(`npm run dev`·`npm start`)는 `.env` 를 읽지 않으므로 환경변수로 넘기고, `npm run watch` 는 `.env` 를 읽는다.
 
 ## 엔드포인트
 
@@ -55,6 +57,8 @@ npm run build && npm start
 
 ### `GET /health`
 
+`{"ok": true}` 를 돌려준다.
+
 ## 새 상품 알림 (디스코드)
 
 `npm run watch` 를 한 번 실행할 때마다 검색 결과를 `data/seen.json` 과 비교해서 처음 보는 상품을 디스코드 웹훅으로 보낸다.
@@ -72,7 +76,7 @@ npm run build && npm start
 ## 브랜드 필터
 
 상품명으로만 판별한다. 떠리몰의 brandName은 비어있거나 엉뚱한 값이 들어있는 경우가 많다. 규칙은 레포에 두지 않고
-`brands.json`(`BRANDS_FILE`, gitignore 됨)에서 읽는다. 형식은 `brands.example.json` 참고.
+`brands.json`(`BRANDS_FILE`, gitignore 됨)에서 읽는다. `brands.example.json` 을 `brands.json` 으로 복사해 채운다.
 
 - 패턴은 대소문자를 구분하지 않는 정규식 문자열
 - 판정 순서는 `reject` → `always` → `exclude` → `include`
