@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs";
 import type { Product } from "./shopby.js";
 
 /**
- * 떠리몰은 brandName이 비어있거나 "#2.MD추천" 같은 운영용 값인 경우가 많아서
- * 브랜드는 상품명 + brandName 텍스트로 판별한다.
+ * 브랜드는 상품명으로만 판별한다. 떠리몰의 brandName은 비어있거나 "#2.MD추천" 같은 운영용 값이 많고,
+ * 판매자가 다른 브랜드 상품에 엉뚱한 brandName을 넣어둔 경우도 있다.
  *
  * 판정 순서: reject → always → exclude → include
  * - reject: 무조건 제외. 여성 전용·아동 전용처럼 브랜드와 상관없이 관심 없는 상품을 뺀다.
@@ -59,9 +59,8 @@ export function loadBrands(file = process.env.BRANDS_FILE ?? "brands.json"): Bra
   return compileBrands(JSON.parse(text) as Record<string, BrandRuleConfig>);
 }
 
-export function matchesBrand(product: Pick<Product, "name" | "brand">, rule: BrandRule): boolean {
-  const texts = [product.name, product.brand ?? ""];
-  const hit = (res: RegExp[]) => res.some((re) => texts.some((t) => re.test(t)));
+export function matchesBrand(product: Pick<Product, "name">, rule: BrandRule): boolean {
+  const hit = (res: RegExp[]) => res.some((re) => re.test(product.name));
   if (hit(rule.reject)) return false;
   if (hit(rule.always)) return true;
   if (hit(rule.exclude)) return false;

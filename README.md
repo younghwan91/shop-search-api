@@ -71,7 +71,7 @@ npm run build && npm start
 
 ## 브랜드 필터
 
-떠리몰은 brandName이 비어있는 상품이 많아 상품명으로 판별한다. 규칙은 레포에 두지 않고
+상품명으로만 판별한다. 떠리몰의 brandName은 비어있거나 엉뚱한 값이 들어있는 경우가 많다. 규칙은 레포에 두지 않고
 `brands.json`(`BRANDS_FILE`, gitignore 됨)에서 읽는다. 형식은 `brands.example.json` 참고.
 
 - 패턴은 대소문자를 구분하지 않는 정규식 문자열
