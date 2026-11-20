@@ -1,0 +1,8 @@
+{
+  "acme": {
+    "label": "에이크미",
+    "always": ["에이크미\\s*정품", "acme\\s*original"],
+    "exclude": ["에이크미\\s*클럽", "acme\\s*club"],
+    "include": ["^\\s*\\[\\s*(acme|에이크미)", "^\\s*에이크미\\s", "^(에이크미|acme)$"]
+  }
+}

@@ -1,0 +1,59 @@
+import { readFileSync } from "node:fs";
+import type { Product } from "./shopby.js";
+
+/**
+ * 떠리몰은 brandName이 비어있거나 "#2.MD추천" 같은 운영용 값인 경우가 많아서
+ * 브랜드는 상품명 + brandName 텍스트로 판별한다.
+ *
+ * 판정 순서: always → exclude → include
+ * - always: 확실한 브랜드 표기. exclude보다 우선이라 제외 규칙이 실수로 덮지 못한다.
+ * - exclude: 이름만 겹치는 다른 브랜드
+ * - include: 브랜드 머리표처럼 정황상 확실한 표기
+ *
+ * 규칙은 레포에 두지 않고 brands.json(BRANDS_FILE)에서 읽는다. 형식은 brands.example.json 참고.
+ * 패턴은 대소문자를 구분하지 않는 정규식 문자열이다.
+ */
+export interface BrandRuleConfig {
+  label: string;
+  always?: string[];
+  exclude?: string[];
+  include?: string[];
+}
+
+export interface BrandRule {
+  label: string;
+  always: RegExp[];
+  exclude: RegExp[];
+  include: RegExp[];
+}
+
+export type Brands = Record<string, BrandRule>;
+
+export function compileBrands(raw: Record<string, BrandRuleConfig>): Brands {
+  const compile = (patterns: string[] = []) => patterns.map((p) => new RegExp(p, "i"));
+  return Object.fromEntries(
+    Object.entries(raw).map(([key, r]) => [
+      key,
+      { label: r.label, always: compile(r.always), exclude: compile(r.exclude), include: compile(r.include) },
+    ]),
+  );
+}
+
+export function loadBrands(file = process.env.BRANDS_FILE ?? "brands.json"): Brands {
+  let text: string;
+  try {
+    text = readFileSync(file, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err;
+  }
+  return compileBrands(JSON.parse(text) as Record<string, BrandRuleConfig>);
+}
+
+export function matchesBrand(product: Pick<Product, "name" | "brand">, rule: BrandRule): boolean {
+  const texts = [product.name, product.brand ?? ""];
+  const hit = (res: RegExp[]) => res.some((re) => texts.some((t) => re.test(t)));
+  if (hit(rule.always)) return true;
+  if (hit(rule.exclude)) return false;
+  return hit(rule.include);
+}

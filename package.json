@@ -1,0 +1,30 @@
+{
+  "name": "thirtymall-search-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "떠리몰(thirtymall.com) 상품 검색 API — Shopby shop-api 래퍼",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "watch": "node dist/watch.js",
+    "watch:dry": "node dist/watch.js --dry-run"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^10.3.0",
+    "fastify": "^5.12.8",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.1"
+  }
+}
