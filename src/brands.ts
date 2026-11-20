@@ -5,7 +5,8 @@ import type { Product } from "./shopby.js";
  * 떠리몰은 brandName이 비어있거나 "#2.MD추천" 같은 운영용 값인 경우가 많아서
  * 브랜드는 상품명 + brandName 텍스트로 판별한다.
  *
- * 판정 순서: always → exclude → include
+ * 판정 순서: reject → always → exclude → include
+ * - reject: 무조건 제외. 여성 전용·아동 전용처럼 브랜드와 상관없이 관심 없는 상품을 뺀다.
  * - always: 확실한 브랜드 표기. exclude보다 우선이라 제외 규칙이 실수로 덮지 못한다.
  * - exclude: 이름만 겹치는 다른 브랜드
  * - include: 브랜드 머리표처럼 정황상 확실한 표기
@@ -15,6 +16,7 @@ import type { Product } from "./shopby.js";
  */
 export interface BrandRuleConfig {
   label: string;
+  reject?: string[];
   always?: string[];
   exclude?: string[];
   include?: string[];
@@ -22,6 +24,7 @@ export interface BrandRuleConfig {
 
 export interface BrandRule {
   label: string;
+  reject: RegExp[];
   always: RegExp[];
   exclude: RegExp[];
   include: RegExp[];
@@ -34,7 +37,13 @@ export function compileBrands(raw: Record<string, BrandRuleConfig>): Brands {
   return Object.fromEntries(
     Object.entries(raw).map(([key, r]) => [
       key,
-      { label: r.label, always: compile(r.always), exclude: compile(r.exclude), include: compile(r.include) },
+      {
+        label: r.label,
+        reject: compile(r.reject),
+        always: compile(r.always),
+        exclude: compile(r.exclude),
+        include: compile(r.include),
+      },
     ]),
   );
 }
@@ -53,6 +62,7 @@ export function loadBrands(file = process.env.BRANDS_FILE ?? "brands.json"): Bra
 export function matchesBrand(product: Pick<Product, "name" | "brand">, rule: BrandRule): boolean {
   const texts = [product.name, product.brand ?? ""];
   const hit = (res: RegExp[]) => res.some((re) => texts.some((t) => re.test(t)));
+  if (hit(rule.reject)) return false;
   if (hit(rule.always)) return true;
   if (hit(rule.exclude)) return false;
   return hit(rule.include);

@@ -75,7 +75,8 @@ npm run build && npm start
 `brands.json`(`BRANDS_FILE`, gitignore 됨)에서 읽는다. 형식은 `brands.example.json` 참고.
 
 - 패턴은 대소문자를 구분하지 않는 정규식 문자열
-- 판정 순서는 `always` → `exclude` → `include`
+- 판정 순서는 `reject` → `always` → `exclude` → `include`
+- `reject` 는 무조건 제외. 여성 전용·아동 전용처럼 브랜드와 무관하게 관심 없는 상품을 뺀다
 - `always` 가 `exclude` 보다 우선이라, 이름이 겹치는 다른 브랜드를 빼는 규칙이 진짜 브랜드 상품을 덮지 않는다
 
 ## 업스트림 메모

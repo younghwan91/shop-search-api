@@ -1,6 +1,10 @@
 {
   "acme": {
     "label": "에이크미",
+    "reject": [
+      "^(?!.*(남녀|남여|공용|남성|유니섹스|unisex)).*(여성|우먼|women)",
+      "^(?!.*성인).*(유아|아동|키즈|kids|주니어|junior|베이비|baby|토들러|toddler|보이즈|boys|걸즈|girls)"
+    ],
     "always": ["에이크미\\s*정품", "acme\\s*original"],
     "exclude": ["에이크미\\s*클럽", "acme\\s*club"],
     "include": ["^\\s*\\[\\s*(acme|에이크미)", "^\\s*에이크미\\s", "^(에이크미|acme)$"]
