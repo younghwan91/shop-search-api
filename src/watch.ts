@@ -31,6 +31,10 @@ async function saveState(file: string, state: State) {
   await writeFile(file, JSON.stringify(state, null, 2));
 }
 
+export function splitQueries(query: string): string[] {
+  return [...new Set(query.split(",").map((q) => q.trim()).filter(Boolean))];
+}
+
 /** 이전에 본 적 없는 상품만, 오래된 등록순으로 */
 export function findNew(current: Product[], seenIds: Iterable<number>): Product[] {
   const seen = new Set(seenIds);
@@ -54,7 +58,13 @@ export async function runWatch(
   client: Pick<ShopbyClient, "searchAll">,
   notify: (heading: string, products: Product[]) => Promise<void>,
 ): Promise<WatchResult> {
-  const all = await client.searchAll(opts.query, "newest");
+  // 떠리몰 검색은 붙여 쓴 단어("에이크미정품")를 부분 검색어("에이크미")로 못 찾아서,
+  // 쉼표로 나눈 검색어마다 검색해 상품 id로 합친다
+  const byId = new Map<number, Product>();
+  for (const q of splitQueries(opts.query)) {
+    for (const p of await client.searchAll(q, "newest")) byId.set(p.id, p);
+  }
+  const all = [...byId.values()];
   const current = opts.brand ? all.filter((p) => matchesBrand(p, opts.brand!)) : all;
   const state = await loadState(opts.stateFile);
 
@@ -65,7 +75,7 @@ export async function runWatch(
 
   const newProducts = findNew(current, state.seenIds);
   if (newProducts.length > 0) {
-    const label = opts.brand?.label ?? opts.query;
+    const label = opts.brand?.label ?? splitQueries(opts.query).join(", ");
     await notify(`🆕 떠리몰 ${label} 새 상품 ${newProducts.length}개`, newProducts);
   }
   // 내려간 상품 id도 남겨둔다. 다시 올라와도 새 상품으로 치지 않는다.

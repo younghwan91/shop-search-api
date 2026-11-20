@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { compileBrands } from "../src/brands.js";
 import { notifyDiscord } from "../src/discord.js";
 import { toProduct, type Product } from "../src/shopby.js";
-import { findNew, runWatch, type WatchOptions } from "../src/watch.js";
+import { findNew, runWatch, splitQueries, type WatchOptions } from "../src/watch.js";
 import { shopbyProduct } from "./fixtures.js";
 import example from "../brands.example.json" with { type: "json" };
 
@@ -22,6 +22,23 @@ describe("findNew", () => {
       product(1, "a"),
     ];
     expect(findNew(current, [1]).map((p) => p.id)).toEqual([2, 3]);
+  });
+});
+
+describe("splitQueries", () => {
+  it("쉼표로 나누고 공백·빈 값·중복을 정리한다", () => {
+    expect(splitQueries(" a, b ,,a ")).toEqual(["a", "b"]);
+  });
+});
+
+describe("runWatch 여러 검색어", () => {
+  it("검색어마다 검색해서 상품 id로 합친다", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "watch-"));
+    const opts: WatchOptions = { query: "a,b", brand: undefined, stateFile: join(dir, "s.json"), webhookUrl: "x" };
+    const searchAll = vi.fn(async (q: string) => (q === "a" ? [product(1, "x"), product(2, "y")] : [product(2, "y"), product(3, "z")]));
+    const res = await runWatch(opts, { searchAll }, async () => {});
+    expect(searchAll.mock.calls.map((c) => c[0])).toEqual(["a", "b"]);
+    expect(res.total).toBe(3);
   });
 });
 
