@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/brand/wordmark-dark.svg">
-  <img alt="thirtymall-search-api" src="docs/images/brand/wordmark-light.svg" height="56">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/brand/banner-dark.svg">
+  <img alt="thirtymall-search-api" src="docs/images/brand/banner-light.svg" width="100%">
 </picture>
 
 **떠리몰(thirtymall.com) 상품 검색을 캐싱·요청 제한·브랜드 필터링과 함께 깔끔한 REST API 및 디스코드 새 상품 알림으로 감싼 Fastify 서비스.**
