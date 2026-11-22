@@ -1,13 +1,27 @@
-# thirtymall-search-api
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/brand/wordmark-dark.svg">
+  <img alt="thirtymall-search-api" src="docs/images/brand/wordmark-light.svg" height="56">
+</picture>
 
-떠리몰(https://thirtymall.com) 상품 검색 API.
+**떠리몰(thirtymall.com) 상품 검색을 캐싱·요청 제한·브랜드 필터링과 함께 깔끔한 REST API 및 디스코드 새 상품 알림으로 감싼 Fastify 서비스.**
 
-떠리몰 프론트는 NHN커머스 Shopby 기반이고, 상품 검색은 브라우저가 `shop-api.e-ncp.com/products/search`를
-직접 호출한다. 이 서비스는 그 엔드포인트를 감싸서 정리된 응답, 캐시, 요청 제한을 제공한다.
+![Node.js >=22](https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Fastify](https://img.shields.io/badge/Fastify-5-000000?logo=fastify&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 실행
+떠리몰 프론트는 NHN커머스 Shopby 기반이고, 상품 검색은 브라우저가 `shop-api.e-ncp.com/products/search`를 직접 호출합니다. 이 서비스는 그 엔드포인트를 감싸 정규화된 응답, 캐시, 요청 제한, 그리고 디스코드 신규 상품 알림 워처를 제공합니다.
 
-Node.js 22 이상이 필요하다.
+### 핵심 기능
+
+- **정규화된 검색 API**: 할인가 계산, 소비기한, 프로모션 라벨, 재고 상태를 깔끔한 JSON 스키마로 정리 (`GET /search`, `GET /keywords/popular`).
+- **캐시 & 레이트 리밋**: `CACHE_TTL_SECONDS` 기반 응답 캐싱과 IP당 요청 제한으로 업스트림 부하 방지.
+- **4단계 브랜드 필터**: `brands.json`의 `reject` → `always` → `exclude` → `include` 정규식 규칙으로 상품명 기반 정밀 필터링.
+- **디스코드 새 상품 알림**: `npm run watch`가 `data/seen.json`과 비교해 처음 보는 상품만 웹훅으로 전송 (전송 실패 시 다음 실행에서 재전송).
+
+### 빠른 시작
+
+Node.js 22 이상이 필요합니다.
 
 ```bash
 npm install
@@ -16,7 +30,7 @@ npm test
 npm run build && npm start
 ```
 
-설정은 환경변수로 한다. 키와 기본값은 `.env.example` 에 있다. 서버(`npm run dev`·`npm start`)는 `.env` 를 읽지 않으므로 환경변수로 넘기고, `npm run watch` 는 `.env` 를 읽는다.
+설정은 환경변수로 합니다. 키와 기본값은 `.env.example` 에 있습니다. 서버(`npm run dev`·`npm start`)는 `.env` 를 읽지 않으므로 환경변수로 넘기고, `npm run watch` 는 `.env` 를 읽습니다.
 
 ## 엔드포인트
 
