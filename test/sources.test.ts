@@ -6,6 +6,8 @@ import { shopbyProduct } from "./fixtures.js";
 import { musinsaSource } from "../src/sources/musinsa.js";
 import { SourceError } from "../src/sources/types.js";
 import musinsaFixture from "./fixtures/musinsa.json" with { type: "json" };
+import { twentynineSource } from "../src/sources/twentynine.js";
+import twentynineFixture from "./fixtures/29cm.json" with { type: "json" };
 
 const emptyResult = (p: SearchParams) => ({
   query: p.q,
@@ -126,5 +128,61 @@ describe("musinsaSource", () => {
     expect(err).toBeInstanceOf(UpstreamError);
     expect(err.status).toBe(502);
     expect(err.message).toContain("잘못된 접근입니다.");
+  });
+});
+
+describe("twentynineSource", () => {
+  const ok = () => vi.fn(async () => Response.json(twentynineFixture));
+  const urlOf = (f: ReturnType<typeof ok>) => new URL(String((f.mock.calls[0] as unknown[])[0]));
+
+  it("페이지를 limit·offset 으로 바꾸고 정렬 파라미터는 보내지 않는다", async () => {
+    const f = ok();
+    await twentynineSource(f as unknown as typeof fetch).search({ q: "폴로", sort: "relevance", page: 3, size: 20 });
+    const url = urlOf(f);
+    expect(url.origin + url.pathname).toBe("https://search-api.29cm.co.kr/api/v4/products/search");
+    expect(Object.fromEntries(url.searchParams)).toEqual({ keyword: "폴로", limit: "20", offset: "40" });
+  });
+
+  it("관련도순 말고는 지원하지 않는다", async () => {
+    const f = ok();
+    const err = await twentynineSource(f as unknown as typeof fetch)
+      .search({ q: "a", sort: "newest", page: 1, size: 20 })
+      .catch((e) => e);
+    expect(err).toBeInstanceOf(SourceError);
+    expect(err.code).toBe("unsupported_sort");
+    expect(f).not.toHaveBeenCalled();
+  });
+
+  it("상품을 공통 형식으로 옮긴다", async () => {
+    const res = await twentynineSource(ok() as unknown as typeof fetch).search({ q: "a", sort: "relevance", page: 1, size: 2 });
+    const [a, b] = twentynineFixture.data.products;
+    expect(res.totalCount).toBeNull();
+    expect(res.items[0]).toMatchObject({
+      source: "29cm",
+      id: String(a.itemNo),
+      imageUrl: `https://img.29cm.co.kr${a.imageUrl}`,
+      url: `https://product.29cm.co.kr/catalog/${a.itemNo}`,
+    });
+    expect(res.items[1]).toEqual({
+      source: "29cm",
+      id: String(b.itemNo),
+      name: b.itemName,
+      brand: b.frontBrandNameKor,
+      price: 50000,
+      discountedPrice: 40000,
+      discountRate: 20,
+      soldOut: true,
+      imageUrl: null,
+      url: `https://product.29cm.co.kr/catalog/${b.itemNo}`,
+    });
+  });
+
+  it("result 가 SUCCESS 가 아니면 upstream 오류", async () => {
+    const f = vi.fn(async () => Response.json({ result: "FAIL", message: "nope", data: null }));
+    const err = await twentynineSource(f as unknown as typeof fetch)
+      .search({ q: "a", sort: "relevance", page: 1, size: 20 })
+      .catch((e) => e);
+    expect(err).toBeInstanceOf(UpstreamError);
+    expect(err.status).toBe(502);
   });
 });

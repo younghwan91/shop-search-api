@@ -1,0 +1,72 @@
+{
+  "result": "SUCCESS",
+  "data": {
+    "products": [
+      {
+        "itemNo": 4194289,
+        "itemName": "코튼 치노 베이스볼 캡 (NEWPORT NAVY / RED)",
+        "frontBrandNo": 6890,
+        "frontBrandNameKor": "폴로 랄프 로렌",
+        "frontBrandNameEng": "POLO RALPH LAUREN",
+        "consumerPrice": 99000,
+        "imageUrl": "/item/202610/11f1cde40c83392699aebd0f005c2543.jpg",
+        "heartCount": 440,
+        "reviewCount": 4,
+        "lastSalePercent": 0,
+        "lastSalePrice": 99000,
+        "isSoldOut": false,
+        "isFreeShipping": true,
+        "isNew": false,
+        "reviewAveragePoint": 5.0,
+        "heartOn": false,
+        "saleInfoV2": {
+          "consumerPrice": 99000,
+          "sellPrice": 99000,
+          "saleRate": 0,
+          "couponSaleRate": 0,
+          "isCoupon": false,
+          "totalSellPrice": 99000,
+          "totalSaleRate": 0
+        },
+        "eventTags": [],
+        "traceInfo": null,
+        "tags": null
+      },
+      {
+        "itemNo": 3428748,
+        "itemName": "[선물포장] Mega Hair Claw - Burgundy",
+        "frontBrandNo": 87881,
+        "frontBrandNameKor": "프롬플로",
+        "frontBrandNameEng": "FROMFLO",
+        "consumerPrice": 50000,
+        "imageUrl": null,
+        "heartCount": 3949,
+        "reviewCount": 106,
+        "lastSalePercent": 20,
+        "lastSalePrice": 40000,
+        "isSoldOut": true,
+        "isFreeShipping": false,
+        "isNew": false,
+        "reviewAveragePoint": 4.5,
+        "heartOn": false,
+        "saleInfoV2": {
+          "consumerPrice": 32000,
+          "sellPrice": 30400,
+          "saleRate": 5,
+          "couponSaleRate": 0,
+          "isCoupon": false,
+          "totalSellPrice": 28170,
+          "totalSaleRate": 12
+        },
+        "eventTags": [],
+        "traceInfo": null,
+        "tags": null
+      }
+    ],
+    "keywordTypes": [
+      "brand"
+    ]
+  },
+  "message": null,
+  "errorCode": null
+}
