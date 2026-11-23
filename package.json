@@ -1,9 +1,9 @@
 {
-  "name": "thirtymall-search-api",
+  "name": "shop-search-api",
   "version": "0.1.0",
   "license": "MIT",
   "private": true,
-  "description": "떠리몰(thirtymall.com) 상품 검색 API — Shopby shop-api 래퍼",
+  "description": "떠리몰·무신사·29CM 상품 검색 API — 캐시·요청 제한·브랜드 필터, 떠리몰 새 상품 디스코드 알림",
   "type": "module",
   "engines": {
     "node": ">=22"
