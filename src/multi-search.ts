@@ -43,9 +43,13 @@ export const multiSearchQuery = (brandKeys: (b: string) => boolean) =>
     size: z.coerce.number().int().min(1).max(100).default(20),
   });
 
-/** 새 소스는 상품명에 브랜드가 빠진 경우가 많아(무신사) 브랜드를 머리표처럼 붙여 판정한다. */
+/**
+ * 브랜드 판정에 쓸 문자열. 떠리몰은 brandName 이 운영용 값이거나 틀린 경우가 많아 기존처럼 상품명만 본다(src/brands.ts).
+ * 무신사·29CM 은 상품명에 브랜드가 빠진 경우가 많고 브랜드 필드가 정확해서 머리표처럼 붙여 판정한다.
+ */
 export function brandText(item: Item): string {
-  return item.brand ? `[${item.brand}] ${item.name}` : item.name;
+  if (item.source === "thirtymall" || !item.brand) return item.name;
+  return `[${item.brand}] ${item.name}`;
 }
 
 export async function searchSources(

@@ -113,6 +113,19 @@ describe("GET /search?sources=", () => {
     expect(body.results[0].excludedCount).toBe(1);
   });
 
+  it("떠리몰은 brand 필터를 기존처럼 상품명으로만 판정한다", async () => {
+    thirtymall.search.mockResolvedValueOnce({
+      totalCount: 3,
+      items: [
+        item("thirtymall", "1", "[에이크미] 맨투맨", "#2.MD추천"),
+        item("thirtymall", "2", "[다른브랜드] 셔츠", "에이크미"),
+        item("thirtymall", "3", "에이크미 반팔"),
+      ],
+    });
+    const body = (await app.inject({ url: "/search?q=a&sources=thirtymall&brand=acme" })).json();
+    expect(body.results[0].items.map((i: Item) => i.id)).toEqual(["1", "3"]);
+  });
+
   it("모르는 brand 면 400", async () => {
     const res = await app.inject({ url: "/search?q=a&sources=musinsa&brand=nope" });
     expect(res.statusCode).toBe(400);
