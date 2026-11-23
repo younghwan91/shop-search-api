@@ -1,0 +1,79 @@
+{
+  "data": {
+    "list": [
+      {
+        "goodsNo": 7634030,
+        "goodsName": "남성 리브 니트 울 블렌드 스카프(MAPOHGS0J320893020)",
+        "goodsLinkUrl": "https://www.musinsa.com/products/7634030",
+        "thumbnail": "https://image.msscdn.net/images/goods_img/20261027/7634030/7634030_17931754506019_500.jpg",
+        "displayGenderText": "남성",
+        "isSoldOut": false,
+        "normalPrice": 149000,
+        "price": 149000,
+        "couponPrice": null,
+        "saleRate": 0,
+        "couponSaleRate": null,
+        "hasOptionPrice": false,
+        "extraDiscountAmount": 0,
+        "finalPrice": 149000,
+        "finalDiscount": 0,
+        "isLowestPrice": false,
+        "isOptimalPrice": false,
+        "isOptionSalePriceVaried": false,
+        "brand": "poloralphlauren",
+        "brandName": "폴로 랄프 로렌",
+        "brandLinkUrl": "https://www.musinsa.com/brand/poloralphlauren",
+        "reviewCount": 0,
+        "reviewScore": 0,
+        "isOptionVisible": true,
+        "isAd": false,
+        "adTooltip": null,
+        "score": 0.0,
+        "usedConditionGrade": null,
+        "experimentBucket": "rerank_relevance_qu_ver"
+      },
+      {
+        "goodsNo": 7634752,
+        "goodsName": "여성 코튼 플리스 풀 지퍼 후디(WMPOKNINFB20691100)",
+        "goodsLinkUrl": "https://www.musinsa.com/products/7634752",
+        "thumbnail": "https://image.msscdn.net/images/goods_img/20261027/7634752/7634752_17932552343752_500.jpg",
+        "displayGenderText": "여성",
+        "isSoldOut": false,
+        "normalPrice": 100000,
+        "price": 70000,
+        "couponPrice": null,
+        "saleRate": 30,
+        "couponSaleRate": null,
+        "hasOptionPrice": false,
+        "extraDiscountAmount": 0,
+        "finalPrice": 70000,
+        "finalDiscount": 30000,
+        "isLowestPrice": false,
+        "isOptimalPrice": false,
+        "isOptionSalePriceVaried": false,
+        "brand": "poloralphlauren",
+        "brandName": "폴로 랄프 로렌",
+        "brandLinkUrl": "https://www.musinsa.com/brand/poloralphlauren",
+        "reviewCount": 1,
+        "reviewScore": 100,
+        "isOptionVisible": true,
+        "isAd": false,
+        "adTooltip": null,
+        "score": 0.0,
+        "usedConditionGrade": null,
+        "experimentBucket": "rerank_relevance_qu_ver"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "size": 2,
+      "totalCount": 23501,
+      "totalPages": 11751,
+      "hasNext": true
+    },
+    "dsBucketProduct": "rerank_relevance_qu_ver"
+  },
+  "meta": {
+    "result": "SUCCESS"
+  }
+}
