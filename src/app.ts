@@ -4,9 +4,17 @@ import { z } from "zod";
 import { loadBrands, matchesBrand, type Brands } from "./brands.js";
 import { TtlCache } from "./cache.js";
 import type { Config } from "./config.js";
+import { multiSearchQuery, searchSources } from "./multi-search.js";
 import { SORTS, ShopbyClient, UpstreamError, type Product, type SearchResult, type Sort } from "./shopby.js";
+import { defaultSources } from "./sources/index.js";
+import type { Source, SourceId, SourceResult } from "./sources/types.js";
 
-export function buildApp(config: Config, client = new ShopbyClient(config), brands: Brands = loadBrands()) {
+export function buildApp(
+  config: Config,
+  client = new ShopbyClient(config),
+  brands: Brands = loadBrands(),
+  sources: Record<SourceId, Source> = defaultSources(client),
+) {
   const searchQuery = z.object({
     q: z.string().trim().min(1, "q is required").max(100),
     sort: z.enum(Object.keys(SORTS) as [Sort, ...Sort[]]).default("popular"),
@@ -21,6 +29,8 @@ export function buildApp(config: Config, client = new ShopbyClient(config), bran
   const searchCache = new TtlCache<SearchResult>(config.cacheTtlMs);
   const allCache = new TtlCache<Product[]>(config.cacheTtlMs);
   const keywordCache = new TtlCache<string[]>(config.cacheTtlMs * 5);
+  const sourceCache = new TtlCache<SourceResult>(config.cacheTtlMs);
+  const multiQuery = multiSearchQuery((b) => Object.hasOwn(brands, b));
 
   app.register(rateLimit, { max: config.rateLimitPerMinute, timeWindow: "1 minute" });
 
@@ -40,6 +50,16 @@ export function buildApp(config: Config, client = new ShopbyClient(config), bran
   app.get("/health", async () => ({ ok: true }));
 
   app.get("/search", async (req) => {
+    if ((req.query as Record<string, unknown>).sources !== undefined) {
+      // 여러 소스 검색. sources 가 없을 때의 기존 응답은 아래 코드 그대로 둔다(떠리몰 크론·기존 호출 보호).
+      const { sources: ids, brand, ...p } = multiQuery.parse(req.query);
+      const results = await searchSources(
+        ids.map((id) => sources[id]),
+        p,
+        { brand: brand ? brands[brand] : undefined, cache: sourceCache },
+      );
+      return { query: p.q, sort: p.sort, page: p.page, size: p.size, ...(brand ? { brand } : {}), results };
+    }
     const { brand, ...params } = searchQuery.parse(req.query);
     if (!brand) {
       return searchCache.get(JSON.stringify(params), () => client.search(params));
@@ -63,6 +83,10 @@ export function buildApp(config: Config, client = new ShopbyClient(config), bran
       items: filtered.slice(start, start + params.size),
     };
   });
+
+  app.get("/sources", async () => ({
+    sources: Object.values(sources).map(({ id, label, sorts, maxPage }) => ({ id, label, sorts, maxPage })),
+  }));
 
   app.get("/keywords/popular", async () => ({
     keywords: await keywordCache.get("popular", () => client.popularKeywords()),
