@@ -20,9 +20,24 @@
 
 </div>
 
-## 빠른 시작
+## 바로 해 보기
 
-Node.js 22 이상이 필요합니다.
+키도 네트워크도 필요 없습니다. 쇼핑몰로는 요청이 한 번도 나가지 않고, 합성 데이터와 저장된 응답으로 서버가 뜹니다(Node.js 22 이상).
+
+```bash
+git clone https://github.com/younghwan91/shop-search-api && cd shop-search-api
+npm install && npm run demo      # http://127.0.0.1:3000
+```
+
+다른 터미널에서 세 곳을 한 번에 검색해 봅니다.
+
+```bash
+curl 'localhost:3000/search?q=%EB%9D%BC%EB%A9%B4&sources=thirtymall,musinsa,29cm'
+```
+
+떠리몰은 `demo/thirtymall.synthetic.json`의 합성 상품이고, 무신사·29CM은 `test/fixtures`에 저장된 응답이라 검색어와 상관없이 같은 결과가 나옵니다. 실제 쇼핑몰에 연결하려면 아래 빠른 시작을 따르세요.
+
+## 빠른 시작
 
 ```bash
 npm install
@@ -63,6 +78,13 @@ npm run build && npm start
 | [가이드](docs/guide.md) | 엔드포인트 스키마, 여러 쇼핑몰 검색, 디스코드 알림 설정, 브랜드 필터 규칙, 업스트림 메모 |
 | [`.env.example`](.env.example) | 환경변수 키와 기본값 |
 | [`brands.example.json`](brands.example.json) | 브랜드 필터 설정 예시 |
+
+## 같은 저자의 도구
+
+- [kiwoom-client](https://github.com/younghwan91/kiwoom-client): 키움 REST API를 파이썬과 AI 에이전트로 쓰는 비공식 클라이언트
+- [fin-checkup](https://github.com/younghwan91/fin-checkup): 상장사 재무제표를 신호등으로 읽어 주는 무료 도구
+
+그 밖의 프로젝트는 [younghwan91 프로필](https://github.com/younghwan91)에서 볼 수 있습니다.
 
 ## 라이선스
 
