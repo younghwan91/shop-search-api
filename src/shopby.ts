@@ -173,6 +173,22 @@ function applyDiscount(price: number, amount: number, unit: string | null): numb
   return unit === "RATE" || unit === "PERCENT" ? price * (1 - amount / 100) : price - amount;
 }
 
+/**
+ * Shopby는 프로토콜 상대 URL(//...)을 주고, 파일 이름의 공백·한글을 인코딩하지 않은 채로 준다
+ * ("제목을 입력해주세요. - 2026-11-16T133932.258_....webp"). 그대로 두면 디스코드가 embed를 거부하므로
+ * URL 파서로 퍼센트 인코딩한 http(s) URL로 바꾸고, 파싱이 안 되면 버린다.
+ */
+export function normalizeHttpUrl(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  try {
+    const url = new URL(trimmed.startsWith("//") ? `https:${trimmed}` : trimmed);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function toProduct(p: ShopbyProduct): Product {
   const afterImmediate = applyDiscount(p.salePrice, p.immediateDiscountAmt, p.immediateDiscountUnitType);
   const discounted = Math.max(
@@ -201,8 +217,7 @@ export function toProduct(p: ShopbyProduct): Product {
     promotion: p.promotionText || null,
     labels: p.stickerLabels ?? [],
     delivery: p.deliveryConditionInfo?.summary ?? null,
-    // Shopby는 프로토콜 상대 URL(//...)을 준다
-    imageUrl: image ? (image.startsWith("//") ? `https:${image}` : image) : null,
+    imageUrl: image ? normalizeHttpUrl(image) : null,
     url: `https://thirtymall.com/detail?id=${p.productNo}`,
   };
 }
